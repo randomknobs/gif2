@@ -1,1 +1,0 @@
-Giphy TV and Search
