@@ -25,7 +25,8 @@
   var url = 'http://api.giphy.com/v1/gifs/search?q=';
   var query = status;
   $.getJSON(url + query + apiKey, function(data) {
-    $('body').css('background-image', 'url(' + data.data[5].images.original.url + ')');
+    var randomIndex = Math.floor(Math.random() * data.data.length);
+$('body').css('background-image', 'url(' + data.data[randomIndex].images.original.url + ')');
   });
 }
 }
