@@ -6,8 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Today's Date</title>
     <script>
-        let d = new Date();
-        alert("Today's date is " + d);
+        function weather(position) {
+  var apiKey = '';
+  var url = '';
+  var data;
+  // console.log(position);
+  $.getJSON(url + apiKey + "/" + position.coords.latitude + "," + position.coords.longitude + "?callback=?", function(data) {
+
+    $('.js-current-item1').html(Math.floor(data.currently.temperature) + '&#176;');
+    $('.js-current-item2').html(data.currently.summary);
+
+    gif(data.currently.icon)
+    city(position.coords.latitude + "," + position.coords.longitude)
+
+  });
+         function gif(status) {
+  var apiKey = '';
+  var url = 'http://api.giphy.com/v1/gifs/search?q=';
+  var query = status;
+  $.getJSON(url + query + apiKey, function(data) {
+    $('body').css('background-image', 'url(' + data.data[5].images.original.url + ')');
+  });
+}
+}
     </script>
 </head>
  
