@@ -1,70 +1,40 @@
-   <v-container>
-        <v-layout text-center wrap>
-            <v-flex xs12>
-                <v-img :src="require('../assets/logo.svg')" class="my-3" contain height="200"></v-img>
-            </v-flex>
-            <v-text-field label="Search" outlined rounded v-model="searchText"></v-text-field>
-            <v-btn outlined rounded block @click="findGIF">Search</v-btn>
-            <div class="gifs" v-show="showGIFs" ref="gifs">
-                <div v-for="(gif, index) in gifs" :key="index">
-                    <img class="gif" :src="gif.preview" />
-                </div>
-            </div>
-        </v-layout>
-    </v-container>
-</template>
+<!DOCTYPE html>
+<html lang="en-US">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Today's Date</title>
+</head>
+ 
+<body>
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
 
-<script>
-export default {
-    data: function() {
-        return {
-            searchText: "",
-            gifs: [],
-            index: 1,
-            showGIFs: true
-        };
-    },
-    methods: {
-        async fetchGIFs(number) {
-            let apiKey = "0HaE831ZSEgJOV6ELIn13XPVEZRiif5S"; // deleted to keep it private
-            let searchEndPoint = "https://api.giphy.com/v1/gifs/search?";
-            let limit = number;
-            let gifsArray = [];
+q = "+=";
 
-            let url = `${searchEndPoint}&api_key=${apiKey}&q=${this.searchText}&limit=${limit}`;
+request = new XMLHttpRequest;
+request.open('GET', 'http://api.giphy.com/v1/gifs/random?api_key=0HaE831ZSEgJOV6ELIn13XPVEZRiif5S&tag='+q, true);
 
-            try {
-                let response = await fetch(url);
-                let json = await response.json();
-
-                json.data.forEach(gif => {
-                    gifsArray.push({
-                        url: gif.url,
-                        preview: gif.images.preview_gif.url,
-                        src: gif.images.original.url,
-                        height: gif.images.original.height,
-                        width: gif.images.original.width
-                    });
-                });
-
-                return gifsArray;
-            } catch (error) {
-                console.log("Ooops, take a look at this error: " + error);
-            }
-            return "I guess something didn't go right here";
-        },
-
-        findGIF() {
-            let temp = [];
-            (async () => {
-                try {
-                    temp = await this.fetchGIFs(5);
-                    this.gifs.push(...temp);
-                } catch (err) {
-                    console.log("Have a look at this: " + err);
-                }
-            })();
-        }
-    }
+request.onload = function() {
+    if (request.status >= 200 && request.status < 400){
+        data = JSON.parse(request.responseText).data.image_url;
+        console.log(data);
+        document.getElementById("here_is_gif").innerHTML = '<center><img src = "'+data+'"  title="GIF via Giphy"></center>';
+    } else {
+        console.log('reached giphy, but API returned an error');
+     }
 };
-</script>
+
+request.onerror = function() {
+    console.log('connection error');
+};
+
+request.send();
+});
+  </script>
+ 
+</body>
+ 
+</html>
