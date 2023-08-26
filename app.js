@@ -13,7 +13,7 @@ function loadGIF(e) {
   }
   e.preventDefault();
   fetch(
-    "http://api.giphy.com/v1/gifs/translate?api_key=g3TEgnU2pGODGJrcvHcn36HwOhK3E8l9&s=" +
+    "http://api.giphy.com/v1/gifs/translate?api_key=0HaE831ZSEgJOV6ELIn13XPVEZRiif5S&s=" +
       searchValue,
     {
       // Here we use the variable searchValue with what was typed by the user.
