@@ -42,7 +42,7 @@ APItrending();
 function APItrending() {
 
     var API_data;
-    var API_trending_url = `https://api.giphy.com/v1/gifs/trending?api_key=${API_key}&limit=1000&offset=0&rating=G&lang=en`;
+    var API_trending_url = `https://api.giphy.com/v1/gifs/cars?api_key=${API_key}&limit=1000&offset=0&rating=G&lang=en`;
     
     var GIPHYAPIResponse;
     var GIPHYAPIRequest = new XMLHttpRequest();
