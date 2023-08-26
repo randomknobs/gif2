@@ -3,7 +3,7 @@
 */
 
 // Replace my temp API key with yours. Grab one here: https://developers.giphy.com/ (it's free)
-var giphyAPIKey = "c98cd7e6c6ab474eb3f922a34d725a7e";
+var giphyAPIKey = "0HaE831ZSEgJOV6ELIn13XPVEZRiif5S";
 
 // The title of your own GiphyTV :)
 var giphyTVUsername = "Cats are everywhere";
