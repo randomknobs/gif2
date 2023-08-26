@@ -24,10 +24,10 @@
 <input name="query" type="text" required >
 <input type="submit" id="button" value="GENERATE">
 
-</form>-
+</form>
 
 
-
+<script>
 
 runTimer = (n) => {
 
@@ -50,6 +50,7 @@ console.log(data)
 document.getElementById("belly").src = data.data.images.original.url
 });
 }
+  </script>
 },1000);
 }
 
