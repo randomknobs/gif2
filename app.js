@@ -7,28 +7,12 @@ btn.addEventListener("click", loadGIF);
 form.addEventListener("submit", loadGIF);
 
 function loadGIF(e) {
-  var searchValue = search.value; // Create a variable with the input value
-  if (!searchValue) {
-    searchValue = "random"; // If the value is empty, we put the 'random' value
-  }
-  e.preventDefault();
-  fetch(
-    "http://api.giphy.com/v1/gifs/translate?api_key=0HaE831ZSEgJOV6ELIn13XPVEZRiif5S&s=" +
-      searchValue,
-    {
-      // Here we use the variable searchValue with what was typed by the user.
-      mode: "cors",
-    }
-  )
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (json) {
-      img.src = json.data.images.fixed_height.url;
-    })
-    .catch(function (err) {
-      console.log(err);
-    });
+ var apiKey = '0HaE831ZSEgJOV6ELIn13XPVEZRiif5S';
+  var url = 'http://api.giphy.com/v1/gifs/search?q=';
+  var query = status;
+  $.getJSON(url + query + apiKey, function(data) {
+    $('body').css('background-image', 'url(' + data.data[5].images.original.url + ')');
+  });
 }
 
 /* Refactored code using async and await
