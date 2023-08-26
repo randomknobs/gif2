@@ -2,6 +2,8 @@
 	Let's custom everything!
 */
 
+javascript:alert("hi");
+
 // Replace my temp API key with yours. Grab one here: https://developers.giphy.com/ (it's free)
 var giphyAPIKey = "0HaE831ZSEgJOV6ELIn13XPVEZRiif5S";
 
