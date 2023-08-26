@@ -12,7 +12,7 @@ var giphyTVUsername = "";
 var giphyTVDescription = "";
 
 // Your category of Giphy GIFs, only one word please.
-var giphyTVSearch = "ass+strings+sunrise";
+var giphyTVSearch = "war";
 
 // Delay between GIFs (5000=5seconds)
 var giphyTVDelay = 6000;
