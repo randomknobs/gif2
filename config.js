@@ -18,7 +18,7 @@ var giphyTVDescription = "";
 var giphyTVSearch = "random";
 
 // Delay between GIFs (5000=5seconds)
-var giphyTVDelay = 7000;
+var giphyTVDelay = 10000;
 
 // MAGIC! (don't touch, it hurts)
 document.getElementById("giphyTVUsername").innerHTML = giphyTVUsername;
