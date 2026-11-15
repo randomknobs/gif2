@@ -72,7 +72,7 @@
 			    // Тема из адреса: index.html?q=cats  (или #cats)
 			    (function () {
 			        var q = new URLSearchParams(location.search).get('q') || decodeURIComponent(location.hash.replace(/^#/, ''));
-			        if (q) { giphyTVSearch = q; }
+			        if (q && ['bang','text','symbol'].indexOf(q.toLowerCase()) < 0) { giphyTVSearch = q; }
 			    })();
 
 			    function slideshow() {
