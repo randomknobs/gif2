@@ -161,6 +161,8 @@ addEventListener('resize', resize);
 resize();
 
 function frame(t){
+  // jweb не всегда шлёт resize: сверяем размер окна каждый кадр
+  if (innerWidth !== W || innerHeight !== H || Math.min(devicePixelRatio || 1, 2) !== DPR) resize();
   if (!started){ last = t; started = true; }
   if (t - last > SWITCH_MS){
     last = t; mode = (mode + 1) % MODES.length;
