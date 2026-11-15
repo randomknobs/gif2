@@ -69,9 +69,15 @@
 			    <script>
 			    var interval;
 
+			    // Тема из адреса: index.html?q=cats  (или #cats)
+			    (function () {
+			        var q = new URLSearchParams(location.search).get('q') || decodeURIComponent(location.hash.replace(/^#/, ''));
+			        if (q) { giphyTVSearch = q; }
+			    })();
+
 			    function slideshow() {
 			        $.support.cors = true;
-			        $.getJSON("https://api.giphy.com/v1/gifs/random?tag=" + giphyTVSearch + "&rating=pg-13&api_key=" + giphyAPIKey, null, function(response) {
+			        $.getJSON("https://api.giphy.com/v1/gifs/random?tag=" + encodeURIComponent(giphyTVSearch) + "&rating=pg-13&api_key=" + giphyAPIKey, null, function(response) {
 			            var id = response.data.id;
 			            // Grab Orginal Sized webp
 			            $.getJSON("https://api.giphy.com/v1/gifs/" + id + "?api_key=" + giphyAPIKey, null, function(response) {
