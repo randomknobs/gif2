@@ -75,29 +75,77 @@
 			        if (q && ['bang','text','symbol'].indexOf(q.toLowerCase()) < 0) { giphyTVSearch = q; }
 			    })();
 
+			    // Провайдер задаётся в config.js:  var gifProvider = "giphy";  или  "klipy"  (+ var klipyAPIKey = "...")
+			    var PROVIDER = (typeof gifProvider !== 'undefined' && gifProvider) ? String(gifProvider).toLowerCase() : 'giphy';
+			    var KLIPY_KEY = (typeof klipyAPIKey !== 'undefined') ? klipyAPIKey : '';
+			    var BATCH = 50;          // сколько гифок берём одним запросом
+			    var pool = [];           // очередь адресов гифок
+
+			    function isRandomTheme() { var t = (giphyTVSearch || '').toLowerCase(); return !t || t === 'random'; }
+
+			    function toHttps(u) { return String(u).replace(/^http:\/\//i, 'https://'); }
+
+			    function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+			    // --- Giphy: один запрос = до 50 гифок ---
+			    function loadGiphy(done, fail) {
+			        var base = "https://api.giphy.com/v1/gifs/" + (isRandomTheme() ? "trending?" : "search?q=" + encodeURIComponent(giphyTVSearch) + "&");
+			        $.getJSON(base + "limit=" + BATCH + "&rating=pg-13&api_key=" + giphyAPIKey, null, function (r) {
+			            var urls = [];
+			            (r.data || []).forEach(function (g) {
+			                var o = g.images && g.images.original;
+			                var u = o && (o.webp || o.url);
+			                if (u) urls.push(toHttps(u));
+			            });
+			            done(urls);
+			        }).fail(function (x, s, e) { fail(x.status); });
+			    }
+
+			    // --- Klipy: один запрос = до 50 гифок ---
+			    function klipyPick(item) {
+			        var f = item.file || item.files || {};
+			        var sizes = ['hd', 'md', 'sm', 'xs'], fmts = ['webp', 'gif'];
+			        for (var i = 0; i < sizes.length; i++) for (var j = 0; j < fmts.length; j++) {
+			            var o = f[sizes[i]] && f[sizes[i]][fmts[j]];
+			            if (o && o.url) return toHttps(o.url);
+			        }
+			        return null;
+			    }
+			    function loadKlipy(done, fail) {
+			        var base = "https://api.klipy.com/api/v1/" + KLIPY_KEY + "/gifs/" + (isRandomTheme() ? "trending?" : "search?q=" + encodeURIComponent(giphyTVSearch) + "&");
+			        $.getJSON(base + "per_page=" + BATCH + "&customer_id=psyxo-karaoke", null, function (r) {
+			            var list = r && r.data && (Array.isArray(r.data) ? r.data : r.data.data) || (r && r.result && r.result.data) || (r && r.results) || [];
+			            var urls = [];
+			            list.forEach(function (it) { var u = klipyPick(it); if (u) urls.push(u); });
+			            if (!urls.length) console.log('Klipy: не нашёл гифок в ответе', r);
+			            done(urls);
+			        }).fail(function (x, s, e) { fail(x.status); });
+			    }
+
+			    function refill(next) {
+			        var load = (PROVIDER === 'klipy') ? loadKlipy : loadGiphy;
+			        load(function (urls) {
+			            pool = shuffle(urls);
+			            if (!pool.length) { interval = setTimeout(slideshow, 15000); return; }
+			            next();
+			        }, function (status) {
+			            console.log('GIF API error', PROVIDER, status);
+			            interval = setTimeout(slideshow, 30000);
+			        });
+			    }
+
 			    function slideshow() {
 			        $.support.cors = true;
-			        $.getJSON("https://api.giphy.com/v1/gifs/random?tag=" + encodeURIComponent(giphyTVSearch) + "&rating=pg-13&api_key=" + giphyAPIKey, null, function(response) {
-			            var id = response.data.id;
-			            // Grab Orginal Sized webp
-			            $.getJSON("https://api.giphy.com/v1/gifs/" + id + "?api_key=" + giphyAPIKey, null, function(response) {
-			              var webp_src = response.data && response.data.images && response.data.images.original && response.data.images.original.webp;
-			              if (!webp_src) {
-			                slideshow();
-			                return;
-			              }
-			              var image = new Image();
-			              image.src = webp_src.replace(/^http:\/\//i, 'https://'); // Force SSL
-			              image.onerror = slideshow;
-			              image.onload = function () {
-			                $('#viewer').css('background-image', 'url(' + image.src + ')');
-			                interval = setTimeout(slideshow, giphyTVDelay);
-			              };
-			            }).error(function(jqXHR, textStatus, e) { console.log(e); interval = setTimeout(slideshow, 10000);});
-
-			            gifUrl = '//giphy.com/gifs/' + id;
-			        }).error(function(jqXHR, textStatus, e) { console.log(e); interval = setTimeout(slideshow, 10000); });
-			    };
+			        if (!pool.length) { refill(slideshow); return; }
+			        var src = pool.pop();
+			        var image = new Image();
+			        image.src = src;
+			        image.onerror = function () { interval = setTimeout(slideshow, 500); };
+			        image.onload = function () {
+			            $('#viewer').css('background-image', 'url(' + image.src + ')');
+			            interval = setTimeout(slideshow, giphyTVDelay);
+			        };
+			    }
 			    slideshow();
 			  </script>
 	</body>
