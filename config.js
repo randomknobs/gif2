@@ -2,7 +2,8 @@
 	Let's custom everything!
  	javascript:alert("hi");
 */
-
+var gifProvider = "klipy";
+var klipyAPIKey = "diInsVg1vb3WHRuKnnSX4bw7VfYqWuDZcg5T02yh2qBYY06EHqckebR0YJSkCg2N";
 
 
 // Replace my temp API key with yours. Grab one here: https://developers.giphy.com/ (it's free)
