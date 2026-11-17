@@ -71,7 +71,8 @@
 
 			    // Тема из адреса: index.html?q=cats  (или #cats)
 			    (function () {
-			        var q = new URLSearchParams(location.search).get('q') || decodeURIComponent(location.hash.replace(/^#/, ''));
+			        var q = new URLSearchParams(location.search).get('q') || decodeURIComponent(location.hash.replace(/^#/, '').replace(/\+/g, ' '));
+			        q = (q || '').replace(/\+/g, ' ').replace(/\s+/g, ' ').trim();
 			        if (q && ['bang','text','symbol'].indexOf(q.toLowerCase()) < 0) { giphyTVSearch = q; }
 			    })();
 
